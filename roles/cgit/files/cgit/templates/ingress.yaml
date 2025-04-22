@@ -9,8 +9,19 @@ spec:
   tls:
   - hosts:
     - git.aadityadhruv.com
+    - git.spacejunk.sh
     secretName: cgit-tls-le
   rules:
+  - host: git.spacejunk.sh
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: cgit-service
+            port:
+              number: 80
   - host: git.aadityadhruv.com
     http:
       paths:

@@ -18,6 +18,9 @@ spec:
       - name: cgit
         image: "{{ .Values.cgit.image }}:{{ .Values.cgit.version }}"
         volumeMounts:
+        - mountPath: "/usr/share/cgit/theme.css"
+          name: "config"
+          subPath: "theme.css"
         - mountPath: "/etc/cgitrc"
           name: "config"
           subPath: cgitrc
