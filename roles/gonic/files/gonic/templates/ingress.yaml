@@ -9,10 +9,9 @@ spec:
   tls:
   - hosts:
     - music.aadityadhruv.com
-    - music.home
     secretName: gonic-tls
   rules:
-  - host: music.home
+  - host: music.aadityadhruv.com
     http:
       paths:
       - path: /
@@ -22,7 +21,21 @@ spec:
             name: gonic-service
             port:
               number: 80
-  - host: music.aadityadhruv.com
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gonic-ca
+  annotations:
+    cert-manager.io/cluster-issuer: "ca-issuer"
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - music.home
+    secretName: gonic-tls-ca
+  rules:
+  - host: music.home
     http:
       paths:
       - path: /
