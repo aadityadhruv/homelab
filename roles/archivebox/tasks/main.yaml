@@ -1,0 +1,17 @@
+---
+- name: Deploy Archivebox
+  kubernetes.core.helm:
+    name: archivebox
+    chart_ref: "{{ lookup('env', 'PWD') }}/roles/archivebox/files/archivebox"
+    namespace: default
+    state: "{%- if archivebox.enabled -%} present {%- else -%} absent {%- endif -%}"
+    values:
+      replicas: "{{ archivebox.replicas }}"
+      port: "{{ archivebox.port }}"
+      image: "{{ archivebox.image }}"
+      version: "{{ archivebox.version }}"
+      nfs:
+        server: "{{ nfs.server }}"
+        path: "{{ nfs.path }}"
+  delegate_to: localhost
+  run_once: true

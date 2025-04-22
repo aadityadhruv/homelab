@@ -1,0 +1,17 @@
+---
+- name: Add Prometheus remote chart
+  kubernetes.core.helm_repository:
+    name: prometheus
+    repo_url: https://prometheus-community.github.io/helm-charts
+  delegate_to: localhost
+  run_once: true
+
+- name: Deploy prometheus
+  kubernetes.core.helm:
+    name: prometheus
+    chart_ref: prometheus/prometheus
+    namespace: default
+    state: "{%- if monitoring.enabled -%} present {%- else -%} absent {%- endif -%}"
+    values:
+  delegate_to: localhost
+  run_once: true

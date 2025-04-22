@@ -1,0 +1,50 @@
+---
+- name: Lab Configuration
+  hosts: all
+  tasks:
+    - name: Setup Network
+      include_role:
+        name: network
+    - name: Setup Systems
+      include_role:
+        name: system
+    - name: Setup Wireguard
+      include_role:
+        name: wireguard
+    - name: Setup K3S
+      include_role:
+        name: k3s
+      when: inventory_hostname in groups["servers"]
+    - name: Setup MetalLB
+      include_role:
+        name: metallb
+    - name: Setup CA
+      include_role:
+        name: ca
+    - name: Setup PiHole
+      include_role:
+        name: pihole
+    - name: Setup Cloud
+      include_role:
+        name: cloud
+    - name: Setup Immich
+      include_role:
+        name: immich
+    - name: Setup Jellyfin
+      include_role:
+        name: jellyfin
+    - name: Setup Actual
+      include_role:
+        name: actual
+    - name: Setup Git
+      include_role:
+        name: cgit
+    - name: Setup Fishnet
+      include_role:
+        name: fishnet
+    - name: Setup Prometheus
+      include_role:
+        name: prometheus
+    - name: Setup Fishnet
+      include_role:
+        name: fishnet

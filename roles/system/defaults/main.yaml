@@ -1,0 +1,18 @@
+servers:
+  base: true
+packages:
+  dnf:
+    - epel-release
+    - htop
+    - fail2ban
+    - git
+    - neovim
+    - nfs-utils
+    - nmap
+    - podman
+    - podman-compose
+    - restic
+    - sqlite
+    - tmux
+    - wireguard-tools
+    - yamllint

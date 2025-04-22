@@ -1,0 +1,17 @@
+---
+- name: Deploy Actual
+  kubernetes.core.helm:
+    name: actual
+    chart_ref: "{{ lookup('env', 'PWD') }}/roles/actual/files/actual"
+    namespace: default
+    state: "{%- if actual.enabled -%} present {%- else -%} absent {%- endif -%}"
+    values:
+      replicas: "{{ actual.replicas}}"
+      port: "{{ actual.port }}"
+      image: "{{ actual.image }}"
+      version: "{{ actual.version }}"
+      nfs:
+        server: "{{ nfs.server }}"
+        path: "{{ nfs.path }}"
+  delegate_to: localhost
+  run_once: true

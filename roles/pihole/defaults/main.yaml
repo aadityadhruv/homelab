@@ -1,0 +1,8 @@
+pihole:
+  enabled: false
+  baremetal: false
+  version: 2025.02.6
+  replicas: 1
+  image: pihole/pihole
+nfs:
+  path: "/mnt/nfs/k3s/pihole"

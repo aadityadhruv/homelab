@@ -1,0 +1,39 @@
+- name: Add VLAN configuration
+  ansible.builtin.raw: "robocfg vlan {{ item }} ports '1t 5t'"
+  loop: "{{ network.vlans }}"
+
+- name: Bind VLANs to eth0
+  ansible.builtin.raw: "vconfig add eth0 {{ item }}"
+  loop: "{{ network.vlans }}"
+  ignore_errors: true
+
+- name: Bring VLANs up
+  ansible.builtin.raw: "ip link set dev vlan{{ item }} up"
+  loop: "{{ network.vlans }}"
+
+- name: Create bridges
+  ansible.builtin.raw: "brctl addbr br{{ item }}"
+  loop: "{{ network.vlans }}"
+  ignore_errors: true
+
+- name: Add vlans to bridges
+  ansible.builtin.raw: "brctl addif br{{ item }} vlan{{ item }}"
+  loop: "{{ network.vlans }}"
+  ignore_errors: true
+
+- name: Setup IP Ranges for VLANs
+  ansible.builtin.raw: "ip addr add 192.168.{{ item }}.1/24 dev br{{ item }}"
+  loop: "{{ network.vlans }}"
+  ignore_errors: true
+
+- name: Bring bridges up
+  ansible.builtin.raw: "ip link set dev br{{ item }} up"
+  loop: "{{ network.vlans }}"
+
+- name: Allow INPUT from bridges #This allows packets to reach the router
+  ansible.builtin.raw: "iptables -A INPUT -i br{{ item }} -j ACCEPT"
+  loop: "{{ network.vlans }}"
+
+- name: Allow INPUT from bridges #This allows packets to be forwarded to other interfaces
+  ansible.builtin.raw: "iptables -A FORWARD -i br{{ item }} -j ACCEPT"
+  loop: "{{ network.vlans }}"

@@ -1,0 +1,17 @@
+---
+- name: Deploy Cloud
+  kubernetes.core.helm:
+    name: cloud
+    chart_ref: "{{ lookup('env', 'PWD') }}/roles/cloud/files/cloud"
+    namespace: default
+    state: "{%- if cloud.enabled -%} present {%- else -%} absent {%- endif -%}"
+    values:
+      image: filebrowser/filebrowser
+      replicas: "{{ cloud.replicas }}"
+      version: "{{ cloud.version }}"
+      port: "{{ cloud.port }}"
+      nfs:
+        path: "{{ cloud.path }}"
+        server: "{{ nfs.server }}"
+  delegate_to: localhost
+  run_once: true

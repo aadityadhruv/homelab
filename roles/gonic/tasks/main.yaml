@@ -1,0 +1,17 @@
+---
+- name: Deploy Gonic
+  kubernetes.core.helm:
+    name: gonic
+    chart_ref: "{{ lookup('env', 'PWD') }}/roles/gonic/files/gonic"
+    namespace: default
+    state: "{%- if gonic.enabled -%} present {%- else -%} absent {%- endif -%}"
+    values:
+      replicas: "{{ gonic.replicas }}"
+      port: "{{ gonic.port }}"
+      image: "{{ gonic.image }}"
+      version: "{{ gonic.version }}"
+      nfs:
+        server: "{{ nfs.server }}"
+        path: "{{ nfs.path }}"
+  delegate_to: localhost
+  run_once: true

@@ -1,0 +1,47 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cgit-le
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - git.aadityadhruv.com
+    secretName: cgit-tls-le
+  rules:
+  - host: git.aadityadhruv.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: cgit-service
+            port:
+              number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cgit-ca
+  annotations:
+    cert-manager.io/cluster-issuer: "ca-issuer"
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - git.home
+    secretName: cgit-tls-ca
+  rules:
+  - host: git.home
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: cgit-service
+            port:
+              number: 80

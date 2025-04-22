@@ -1,0 +1,9 @@
+immich:
+  version: v1.119.0
+  postgres:
+    image: tensorchord/pgvecto-rs
+    user: postgres
+    nfs:
+      path: /mnt/nfs/k3s/immich/db
+nfs:
+  path: /mnt/nfs/k3s/immich/data

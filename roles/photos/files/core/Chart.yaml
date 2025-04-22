@@ -1,0 +1,6 @@
+apiVersion: v2
+name: immich-core
+description: Core for immich
+type: application
+
+version: 0.1.0

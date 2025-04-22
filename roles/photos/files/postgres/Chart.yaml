@@ -1,0 +1,6 @@
+apiVersion: v2
+name: pgvectors
+description: Postgres chart with pgvector extension
+type: application
+
+version: 0.1.0

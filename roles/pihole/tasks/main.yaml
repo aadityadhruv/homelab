@@ -1,0 +1,10 @@
+---
+- name: Setup PiHole (cluster)
+  import_tasks: k8s.yaml
+  when: not pihole.baremetal
+
+- name: Setup PiHole (baremetal)
+  import_tasks: pihole.yaml
+  when: pihole.enabled and pihole.baremetal and inventory_hostname in group["pi"]
+
+

@@ -1,0 +1,9 @@
+actual:
+  enabled: false
+  replicas: 1
+  port: 80
+  image: actualbudget/actual-server
+  version: 24.9.0
+
+nfs:
+  path: "/mnt/nfs/k3s/actual/"

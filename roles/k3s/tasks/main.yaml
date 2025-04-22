@@ -1,0 +1,34 @@
+---
+- name: Setup K3S Master Node
+  ansible.builtin.shell: "curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC='server' sh -s - --token {{ servers.k3s.token }} --disable servicelb"
+  when: inventory_hostname in groups['k3s-master']
+  become: true
+
+- name: Setup K3S Agent Nodes
+  shell: "curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars[groups['k3s-master'][0]]['ansible_default_ipv4']['address'] }}:6443 sh -s - agent --token {{ servers.k3s.token }} --disable servicelb"
+  when: inventory_hostname in groups['k3s-agent']
+  become: true
+
+- name: Change perms for k3s.yaml
+  file:
+    path: "/etc/rancher/k3s/k3s.yaml"
+    mode: "0755"
+  become: true
+  when: inventory_hostname in groups['k3s-master']
+
+
+- name: copy file over to localhost
+  ansible.builtin.fetch:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: /home/aaditya/.kube/config
+    flat: yes
+  when: inventory_hostname in groups['k3s-master']
+
+- name: Update IP address of k3s-master in local kube config
+  ansible.builtin.replace:
+    path: /home/aaditya/.kube/config
+    regexp: "127.0.0.1"
+    replace: "{{ hostvars[groups['k3s-master'][0]]['ansible_default_ipv4']['address'] }}"
+  delegate_to: localhost
+  run_once: true
+

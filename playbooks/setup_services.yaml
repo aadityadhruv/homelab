@@ -1,0 +1,32 @@
+---
+- name: Setup Services
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Setup PiHole
+      include_role:
+        name: pihole
+    - name: Setup Cloud
+      include_role:
+        name: cloud
+    - name: Setup Immich
+      include_role:
+        name: immich
+    - name: Setup Jellyfin
+      include_role:
+        name: jellyfin
+    - name: Setup Actual
+      include_role:
+        name: actual
+    - name: Setup Git
+      include_role:
+        name: cgit
+    - name: Setup Fishnet
+      include_role:
+        name: fishnet
+    - name: Setup Prometheus
+      include_role:
+        name: prometheus
+    - name: Setup Fishnet
+      include_role:
+        name: fishnet

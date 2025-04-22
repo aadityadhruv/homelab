@@ -1,0 +1,11 @@
+- name: Setup VLANs
+  import_tasks: vlans.yaml
+  when: inventory_hostname in groups["router"] and network.router.enabled
+
+- name: Setup DNS
+  import_tasks: dns.yaml
+  when: inventory_hostname in groups["servers"]
+
+- name: Misc Print
+  import_tasks: misc.yaml
+

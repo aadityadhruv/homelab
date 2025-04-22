@@ -1,0 +1,7 @@
+**values.yaml**
+**env**
+**secret**
+**vault**
+_archive
+.vim
+scripts/backups/*password

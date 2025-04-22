@@ -1,0 +1,51 @@
+nfs:
+  server: 192.168.20.5
+actual:
+  enabled: true
+  version: 25.2.1
+jellyfin:
+  version: 10.10.0
+  enabled: true
+gonic:
+  version: 1c23771 #v0.16.4
+  enabled: true
+cgit:
+  version: v2.5
+  enabled: true
+pihole:
+  enabled: true
+  baremetal: false 
+  version: 2024.01.0
+metallb:
+  enabled: true
+  pool: 192.168.20.100-192.168.20.250
+cloud:
+  enabled: true
+immich:
+  enabled: true
+  postgres:
+    version: pg14-v0.2.0
+fishnet:
+  enabled: true
+  replicas: 5
+archivebox:
+  enabled: true
+servers:
+  base: true
+ca:
+  enabled: true
+k3s:
+  enabled: true
+  token: 12345
+network:
+  router:
+    enabled: false
+  wireguard:
+    enabled: false
+    port: 43000
+    path: "/etc/wireguard/"
+  dns: 192.168.1.1
+  vlans:
+    - 10
+    - 20
+    - 30

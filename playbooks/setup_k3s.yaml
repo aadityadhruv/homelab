@@ -1,0 +1,13 @@
+---
+- name: Lab Configuration
+  hosts: all
+  tasks:
+    - name: Setup K3S
+      include_role:
+        name: k3s
+    - name: Setup MetalLB
+      include_role:
+        name: metallb
+    - name: Setup CA
+      include_role:
+        name: ca

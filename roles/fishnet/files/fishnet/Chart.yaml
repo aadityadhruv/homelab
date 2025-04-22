@@ -1,0 +1,6 @@
+apiVersion: v2
+name: fishnet
+description: Distributed analysis for lichess
+type: application
+
+version: 0.1.0

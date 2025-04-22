@@ -1,0 +1,7 @@
+- name: Setup Services
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Setup cgit
+      include_role:
+        name: "roles/cgit"

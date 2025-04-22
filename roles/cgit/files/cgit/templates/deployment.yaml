@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Chart.Name }}-deployment"
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      containers:
+      - name: cgit
+        image: "{{ .Values.cgit.image }}:{{ .Values.cgit.version }}"
+        volumeMounts:
+        - mountPath: "/etc/cgitrc"
+          name: "config"
+          subPath: cgitrc
+        - mountPath: "/srv/git"
+          name: "{{ .Chart.Name }}-volume"
+          subPath: repos
+      - name: soft-serve
+        image: "{{ .Values.softserve.image }}:{{ .Values.softserve.version }}"
+        volumeMounts:
+        - mountPath: "/soft-serve"
+          name: "{{ .Chart.Name }}-volume"
+      volumes:
+        - name: "config"
+          configMap:
+            name: "{{ .Chart.Name }}-config"
+        - name: "{{ .Chart.Name }}-volume"
+          persistentVolumeClaim:
+            claimName: "{{ .Chart.Name }}-pvc"

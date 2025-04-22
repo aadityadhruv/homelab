@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Chart.Name }}-deployment"
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      containers:
+        - name: fishnet
+          image: niklasf/fishnet:2
+          imagePullPolicy: Always
+          env:
+            # - name: CORES
+            #   valueFrom:
+            #     configMapKeyRef:
+            #       name: fishnet-config
+            #       key: cores
+            - name: KEY
+              valueFrom:
+                secretKeyRef:
+                  name: lichess
+                  key: fishnet-private-key
+      restartPolicy: Always

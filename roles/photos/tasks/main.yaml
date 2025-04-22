@@ -1,0 +1,60 @@
+- name: Add Immich remote chart
+  kubernetes.core.helm_repository:
+    name: immich
+    repo_url: https://immich-app.github.io/immich-charts
+  delegate_to: localhost
+  run_once: true
+
+- name: Deploy Immich Postgres Chart
+  kubernetes.core.helm:
+    state: "{%- if immich.enabled -%} present {%- else -%} absent {%- endif -%}"
+    name: immich-postgres
+    chart_ref: "{{ lookup('env', 'PWD') }}/roles/photos/files/postgres"
+    values:
+      image: "{{ immich.postgres.image }}"
+      version: "{{ immich.postgres.version }}"
+      user: "{{ immich.postgres.user }}"
+      password: "{{ immich.postgres.password }}"
+      nfs:
+        server: "{{ nfs.server }}"
+        path: "{{ immich.postgres.nfs.path }}"
+    namespace: default
+  delegate_to: localhost
+  run_once: true
+
+- name: Deploy Immich Core
+  kubernetes.core.helm:
+    state: "{%- if immich.enabled -%} present {%- else -%} absent {%- endif -%}"
+    name: immich-core
+    chart_ref: "{{ lookup('env', 'PWD') }}/roles/photos/files/core"
+    values:
+      nfs:
+        server: "{{ nfs.server }}"
+        path: "{{ nfs.path }}"
+    namespace: default
+  delegate_to: localhost
+  run_once: true
+
+
+- name: Deploy Immich
+  kubernetes.core.helm:
+    state: "{%- if immich.enabled -%} present {%- else -%} absent {%- endif -%}"
+    name: immich
+    chart_ref: immich/immich
+    values:
+      env:
+        DB_USERNAME: "{{ immich.postgres.user }}"
+        DB_PASSWORD: "{{ immich.postgres.password }}"
+        DB_DATABASE_NAME: immich
+        DB_HOSTNAME: immich-db-service
+      image:
+        tag: "{{ immich.version }}"
+      immich:
+        persistence:
+          library:
+            existingClaim: "immich-pvc"
+      redis:
+        enabled: true
+    namespace: default
+  delegate_to: localhost
+  run_once: true

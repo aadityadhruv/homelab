@@ -1,0 +1,15 @@
+- name: Deploy PiHole
+  kubernetes.core.helm:
+    name: pihole
+    chart_ref: "{{ lookup('env', 'PWD') }}/roles/pihole/files/pihole"
+    namespace: default
+    state: "{%- if pihole.enabled -%} present {%- else -%} absent {%- endif -%}"
+    values:
+      replicas: "{{ pihole.replicas }}"
+      image: "{{ pihole.image }}"
+      version: "{{ pihole.version }}"
+      nfs:
+        server: "{{ nfs.server }}"
+        path: "{{ nfs.path }}"
+  delegate_to: localhost
+  run_once: true

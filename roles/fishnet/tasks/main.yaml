@@ -1,0 +1,12 @@
+---
+- name: Deploy Fishnet
+  kubernetes.core.helm:
+    name: fishnet
+    chart_ref: "{{ lookup('env', 'PWD') }}/roles/fishnet/files/fishnet"
+    namespace: default
+    state: "{%- if fishnet.enabled -%} present {%- else -%} absent {%- endif -%}"
+    values:
+      replicas: "{{ fishnet.replicas }}"
+      key: "{{ fishnet.key }}"
+  delegate_to: localhost
+  run_once: true

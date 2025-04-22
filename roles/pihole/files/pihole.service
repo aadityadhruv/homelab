@@ -1,0 +1,14 @@
+[Unit]
+Description=Manage PiHole
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+User=root
+ExecStart=/usr/local/bin/podman-compose -f /opt/containers/pihole.yaml up -d
+ExecStop=/usr/local/bin/podman-compose  -f /opt/containers/pihole.yaml down
+
+[Install]
+WantedBy=multi-user.target

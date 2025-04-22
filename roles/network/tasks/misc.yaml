@@ -1,0 +1,12 @@
+- name: Print Tomato Setup
+  debug:
+    msg: "To complete the rest of the setup, setup the upstream DNS on the router. Also disable DNS rebind protection. Don't forget to add the bridges to the router's DNSMASQ configuration in the form interface=brXX
+      Setup the following iptables on altaria:\n
+      -A PREROUTING -i eth0 -p tcp -m tcp --dport 80 -j DNAT --to-destination 10.0.0.2
+-A PREROUTING -i eth0 -p tcp -m tcp --dport 443 -j DNAT --to-destination 10.0.0.2
+-A PREROUTING -d 137.184.95.59/32 -p tcp -m tcp --dport 80 -j DNAT --to-destination 10.0.0.2
+-A PREROUTING -d 137.184.95.59/32 -p tcp -m tcp --dport 443 -j DNAT --to-destination 10.0.0.2
+-A PREROUTING -d 137.184.95.59/32 -p tcp -m tcp --dport 2222 -j DNAT --to-destination 10.0.0.2:30022
+"
+  delegate_to: localhost
+  run_once: true

@@ -1,0 +1,5 @@
+jellyfin:
+  enabled: false
+  port: 8096
+  version: 10.10.0
+  replicas: 1

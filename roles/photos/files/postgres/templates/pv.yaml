@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "immich-db-pv"
+  labels:
+    app: "immich-db-pv"
+spec:
+  storageClassName: nfs
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: {{ .Values.nfs.server }}
+    path:  {{ .Values.nfs.path }}
+    readOnly: false

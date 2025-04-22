@@ -1,0 +1,36 @@
+---
+- name: Create IPAddressPool
+  kubernetes.core.k8s:
+    state: "{{ 'present' if metallb.enabled else 'absent' }}"
+    definition:
+      apiVersion: metallb.io/v1beta1
+      kind: IPAddressPool
+      metadata:
+        name: pool
+        namespace: default
+      spec:
+        addresses:
+        - "{{ metallb.pool }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Create L2Advertisement
+  kubernetes.core.k8s:
+    state: "{{ 'present' if metallb.enabled else 'absent' }}"
+    definition:
+      apiVersion: metallb.io/v1beta1
+      kind: L2Advertisement
+      metadata:
+        name: metallb
+        namespace: default
+      spec:
+        ipAddressPools:
+        - pool
+        nodeSelectors:
+          - matchLabels:
+              kubernetes.io/hostname: regirock
+          - matchLabels:
+              kubernetes.io/hostname: regice
+          
+  delegate_to: localhost
+  run_once: true

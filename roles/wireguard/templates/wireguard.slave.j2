@@ -1,0 +1,11 @@
+[Interface]
+Address = {{ wireguard_ip }}/24
+ListenPort = {{ network.wireguard.port }}
+PrivateKey = {{ privatekey }}
+DNS = {{ network.dns }}
+
+[Peer]
+PublicKey = {{ hostvars[groups['cloud'][0]]['ansible_local']['wireguard']['PublicKey'] }}
+AllowedIPs = 0.0.0.0/0
+Endpoint = {{ hostvars[groups['cloud'][0]]['ansible_default_ipv4']['address'] }}:{{ network.wireguard.port }}
+PersistentKeepalive = 15

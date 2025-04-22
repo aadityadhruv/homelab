@@ -1,0 +1,6 @@
+cloud:
+  version: v2.26.0
+  replicas: 1
+  enabled: false
+  port: 80
+  path: "/mnt/nfs/k3s/cloud/"

@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-config
+data:
+  cgitrc: |
+    cache-size=1000
+    #css=/cgit.css
+    enable-http-clone=1
+    enable-blame=1
+    enable-commit-graph=1
+    enable-log-filecount=1
+    enable-log-linecount=1
+    enable-git-config=1
+    head-include=/usr/share/cgit/theme.html
+    enable-index-owner=0
+    favicon=/favicon.ico
+    logo=/cgit.png
+    root-title=Space Junk
+    mimetype.gif=image/gif
+    mimetype.html=text/html
+    mimetype.jpg=image/jpeg
+    mimetype.jpeg=image/jpeg
+    mimetype.pdf=application/pdf
+    mimetype.png=image/png
+    mimetype.svg=image/svg+xml
+    source-filter=/usr/lib/cgit/syntax-highlighting.py
+    readme=:README.md
+    robots=noindex, nofollow
+    scan-path=/srv/git/
+

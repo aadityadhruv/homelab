@@ -1,0 +1,7 @@
+---
+- name: Install required dnf packages
+  dnf:
+    name: "{{ item }}"
+  loop: "{{ packages.dnf }}"
+  when: inventory_hostname in groups['servers'] and servers.base
+  become: true

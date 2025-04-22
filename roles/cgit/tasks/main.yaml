@@ -1,0 +1,21 @@
+---
+- name: Deploy cgit
+  kubernetes.core.helm:
+    name: cgit
+    chart_ref: "{{ lookup('env', 'PWD') }}/roles/cgit/files/cgit"
+    namespace: default
+    state: "{%- if cgit.enabled -%} present {%- else -%} absent {%- endif -%}"
+    values:
+      replicas: "{{ cgit.replicas }}"
+      port: "{{ cgit.port }}"
+      cgit:
+        image: "{{ cgit.image }}"
+        version: "{{ cgit.version }}"
+      softserve:
+        image: "{{ softserve.image }}"
+        version: "{{ softserve.version }}"
+      nfs:
+        server: "{{ nfs.server }}"
+        path: "{{ nfs.path }}"
+  delegate_to: localhost
+  run_once: true

@@ -1,0 +1,93 @@
+- name: Setup Wireguard on Master Host
+  block:
+
+  - name: Ensure wireguard is present
+    ansible.builtin.dnf:
+      name: wireguard-tools
+      state: latest
+
+  - name: Generate private key
+    ansible.builtin.shell: "wg genkey"
+    register: privatekey
+
+  - name: Set private key variable
+    ansible.builtin.set_fact:
+      privatekey: "{{ privatekey.stdout_lines[0] }}"
+
+  - name: Generate public key
+    ansible.builtin.shell: "echo {{ privatekey }} | wg pubkey"
+    register: publickey
+
+  - name: Set public key variable
+    ansible.builtin.set_fact:
+      publickey: "{{ publickey.stdout_lines[0] }}"
+
+  - name: Create wireguard config file
+    ansible.builtin.template:
+      src: wireguard.master.j2
+      dest: "{{ network.wireguard.path }}/wg0.conf"
+
+  - name: Ensure ansible facts directory exists
+    ansible.builtin.file:
+      path: /etc/ansible/facts.d
+      state: directory
+      mode: 0755
+
+  - name: Add fact about wireguard config to host
+    ansible.builtin.copy:
+      content: '{ "PublicKey": "{{ publickey }}" }'
+      dest: "/etc/ansible/facts.d/wireguard.fact"
+
+  - name: Re-gather facts
+    gather_facts:
+  when: inventory_hostname in groups["cloud"]
+  become: true
+
+- name: Setup Wireguard on Slave Hosts
+  block:
+  - name: Ensure wireguard is present
+    ansible.builtin.dnf:
+      name: wireguard-tools
+      state: latest
+
+  - name: Wait for master node to generate file
+    ansible.builtin.wait_for:
+      host: "{{ groups['cloud'][0] }}"
+      path: /etc/ansible/facts.d/wireguard.fact
+      search_regex: PublicKey
+    delegate_to: "{{ groups['cloud'][0] }}"
+    register: output
+
+  - name: Generate private key
+    ansible.builtin.shell: "wg genkey"
+    register: privatekey
+
+  - name: Set private key variable
+    ansible.builtin.set_fact:
+      privatekey: "{{ privatekey.stdout_lines[0] }}"
+
+  - name: Generate public key
+    ansible.builtin.shell: "echo {{ privatekey }} | wg pubkey"
+    register: publickey
+
+  - name: Set public key variable
+    ansible.builtin.set_fact:
+      publickey: "{{ publickey.stdout_lines[0] }}"
+
+  - name: Setup wireguard ip fact
+    set_fact:
+      wireguard_ip: "10.0.0.{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'].split('.')[3] }}"
+
+  - name: Create wireguard config file
+    ansible.builtin.template:
+      src: wireguard.slave.j2
+      dest: "{{ network.wireguard.path }}/wg0.conf"
+
+  - name: Add host's details to master
+    lineinfile:
+      path: "{{ network.wireguard.path }}/wg0.conf"
+      line: "\n[Peer]\nPublicKey={{ publickey }}\nAllowedIPs={{ wireguard_ip }}\n"
+    delegate_to: "{{ groups['cloud'][0] }}"
+
+  when: inventory_hostname not in groups["cloud"]
+  become: true

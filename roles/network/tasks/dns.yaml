@@ -1,0 +1,14 @@
+---
+- name: Ensure NetworkManager is installed
+  dnf:
+    name: NetworkManager
+    state: latest
+
+  become: true
+- name: Set DNS to Router
+  community.general.nmcli:
+    conn_name: "{{ ansible_default_ipv4.interface }}"
+    state: present
+    dns4:
+      - "{{ network.gateway }}"
+  become: true

@@ -1,0 +1,13 @@
+:80 {
+        @assets path /cgit.css /cgit.png /favicon.ico /theme.css /theme.html
+        handle @assets {
+                root * /usr/share/cgit
+                file_server
+        }
+
+        reverse_proxy unix//run/fcgiwrap.socket {
+                transport fastcgi {
+                        env SCRIPT_FILENAME /var/www/cgi-bin/cgit
+                }
+        }
+}

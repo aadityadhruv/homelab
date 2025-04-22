@@ -1,0 +1,73 @@
+---
+- name: Ensure podman exists
+  ansible.builtin.dnf:
+    name: podman
+    state: latest
+  become: true
+
+- name: Ensure pip exists
+  ansible.builtin.dnf:
+    name: python3-pip 
+    state: latest
+  become: true
+
+- name: Install podman compose via pip
+  pip:
+    name: podman-compose
+  become: true
+
+- name: Create containers directory
+  ansible.builtin.file:
+    path: /opt/containers/
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: Copy compose file to containers directory
+  ansible.builtin.template:
+    src: pihole.yaml.j2
+    dest: /opt/containers/pihole.yaml
+  become: true
+
+- name: Copy pihole service file to systemd directory
+  ansible.builtin.copy:
+    src: pihole.service
+    dest: /etc/systemd/system/
+  become: true
+
+- name: Ensure systemd-resovled is disabled
+  ansible.builtin.systemd_service:
+    enabled: false
+    name: systemd-resolved
+    state: stopped
+  ignore_errors: true
+  become: true
+
+- name: Enable PiHole serivce
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+    enabled: true
+    state: restarted
+    name: pihole
+  become: true
+
+- name: Open DNS Port TCP
+  ansible.posix.firewalld:
+    port: 53/tcp
+    permanent: true
+    state: enabled
+  become: true
+
+- name: Open DNS Port UDP
+  ansible.posix.firewalld:
+    port: 53/udp
+    permanent: true
+    state: enabled
+  become: true
+
+- name: Open Webserver port
+  ansible.posix.firewalld:
+    port: 8000/tcp
+    permanent: true
+    state: enabled
+  become: true

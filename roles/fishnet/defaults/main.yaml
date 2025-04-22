@@ -1,0 +1,3 @@
+fishnet:
+  enabled: false
+  replicas: 1

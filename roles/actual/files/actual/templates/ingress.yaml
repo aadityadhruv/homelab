@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: actual
+  annotations:
+    cert-manager.io/cluster-issuer: "ca-issuer"
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - finance.aadityadhruv.com
+    - finance.home
+    secretName: actual-tls
+  rules:
+  - host: finance.home
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: actual-service
+            port:
+              number: 80
+  - host: finance.aadityadhruv.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: actual-service
+            port:
+              number: 80

@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pihole
+  annotations:
+    cert-manager.io/cluster-issuer: "ca-issuer"
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - dns.aadityadhruv.com
+    - dns.home
+    secretName: pihole-tls
+  rules:
+  - host: dns.home
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: pihole-service
+            port:
+              number: 80
+  - host: dns.aadityadhruv.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: pihole-service
+            port:
+              number: 80

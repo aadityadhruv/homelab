@@ -1,0 +1,3 @@
+- name: Setup wireguard
+  import_tasks: wireguard.yaml
+  when: wireguard.enabled and inventory_hostname in groups["servers"]

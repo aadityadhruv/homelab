@@ -1,0 +1,68 @@
+- name: Add Jellyfin remote chart
+  kubernetes.core.helm_repository:
+    name: jellyfin 
+    repo_url: https://utkuozdemir.org/helm-charts
+  delegate_to: localhost
+  run_once: true
+
+- name: Create Jellyfin PVs
+  kubernetes.core.k8s:
+    state: "{%- if jellyfin.enabled -%} present {%- else -%} absent {%- endif -%}"
+    src: "{{ lookup('env', 'PWD') }}/roles/jellyfin/files/jellyfin/pv.yaml"
+    namespace: default
+  delegate_to: localhost
+  run_once: true
+- name: Create Jellyfin PVCs
+  kubernetes.core.k8s:
+    state: "{%- if jellyfin.enabled -%} present {%- else -%} absent {%- endif -%}"
+    src: "{{ lookup('env', 'PWD') }}/roles/jellyfin/files/jellyfin/pvc.yaml"
+    namespace: default
+  delegate_to: localhost
+  run_once: true
+- name: Create Jellyfin Ingress
+  kubernetes.core.k8s:
+    state: "{%- if jellyfin.enabled -%} present {%- else -%} absent {%- endif -%}"
+    src: "{{ lookup('env', 'PWD') }}/roles/jellyfin/files/jellyfin/ingress.yaml"
+    namespace: default
+  delegate_to: localhost
+  run_once: true
+
+- name: Get Values Path
+  set_fact:
+    jellyfin_values_path: "{{ lookup('env', 'PWD') }}/roles/jellyfin/files/jellyfin/values.yaml"
+  delegate_to: localhost
+  run_once: true
+
+- name: Get Values
+  set_fact:
+    jellyfin_defaults: "{{ lookup('file', jellyfin_values_path) | from_yaml }}"
+  delegate_to: localhost
+  run_once: true
+
+
+- name: Set User overrides fact
+  set_fact:
+    overrides:
+      port: "{{ jellyfin.port }}"
+      replicaCount: "{{ jellyfin.replicas }}"
+      image:
+        tag: "{{ jellyfin.version }}"
+
+- name: Merge Values with overrides
+  set_fact:
+    jellyfin_values: "{{ jellyfin_defaults | combine(overrides, recursive=True) }}"
+  delegate_to: localhost
+  run_once: true
+
+- debug:
+    var: jellyfin_values
+
+- name: Deploy Jellyfin
+  kubernetes.core.helm:
+    name: jellyfin 
+    chart_ref: jellyfin/jellyfin
+    values: "{{ jellyfin_values }}"
+    namespace: default
+    state: "{%- if jellyfin.enabled -%} present {%- else -%} absent {%- endif -%}"
+  delegate_to: localhost
+  run_once: true
