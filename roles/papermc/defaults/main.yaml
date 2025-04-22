@@ -1,0 +1,7 @@
+papermc:
+  port: 25565
+  image: aadityadhruv/papermc
+  version: 1.19.4
+nfs:
+  server: 192.168.20.5
+  path: "/mnt/nfs/k3s/papermc"

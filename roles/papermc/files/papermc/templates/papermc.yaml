@@ -1,0 +1,84 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "{{ .Chart.Name }}-pv"
+  labels:
+    app: "{{ .Chart.Name }}-pv"
+spec:
+  storageClassName: nfs
+  capacity:
+    storage: 4Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: {{ .Values.nfs.server }}
+    path: {{ .Values.nfs.path }}
+    readOnly: false
+--- 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Chart.Name }}-pvc
+spec:
+  storageClassName: nfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 4Gi
+  selector:
+    matchLabels:
+      app: "{{ .Chart.Name }}-pv"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Chart.Name }}-deployment"
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      containers:
+      - name: papermc
+        image: "{{ .Values.image }}:{{ .Values.version }}"
+        volumeMounts:
+        - mountPath: "/data"
+          subPath: "data"
+          name: "{{ .Chart.Name }}-volume"
+      volumes:
+        - name: "{{ .Chart.Name }}-volume"
+          persistentVolumeClaim:
+            claimName: "{{ .Chart.Name }}-pvc"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-service
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Chart.Name }}
+  ports:
+    - protocol: TCP
+      targetPort: {{ .Values.port }}
+      port: 80
+      name: papermc
+#    - protocol: TCP
+#      nodePort: {{ .Values.nodePort2 }}
+#      targetPort: {{ .Values.port2 }}
+#      port: {{ .Values.serverPort2 }}
+#      name: geyser
+#    - protocol: UDP
+#      nodePort: {{ .Values.nodePort2 }}
+#      targetPort: {{ .Values.port2 }}
+#      port: {{ .Values.serverPort2 }}
+#      name: geyser-udp

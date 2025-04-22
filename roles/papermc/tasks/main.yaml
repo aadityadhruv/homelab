@@ -1,0 +1,34 @@
+- name: Build PaperMC image
+  containers.podman.podman_image:
+    name: "docker.io/aadityadhruv/papermc:{{ papermc.version }}"
+    path: "{{ lookup('env', 'PWD') }}/roles/papermc/files/papermc"
+    build:
+      extra_args: "--build-arg VERSION={{ papermc.version }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Push PaperMC image
+  containers.podman.podman_image:
+    name: "docker.io/aadityadhruv/papermc:{{ papermc.version }}"
+    push: true
+    push_args:
+      dest: "docker.io/aadityadhruv/papermc:{{ papermc.version }}"
+  delegate_to: localhost
+  run_once: true
+  ignore_errors: true
+
+- name: Deploy PaperMC
+  kubernetes.core.helm:
+    name: papermc 
+    chart_ref: "{{ lookup('env', 'PWD') }}/roles/papermc/files/papermc"
+    namespace: default
+    state: "{%- if papermc.enabled -%} present {%- else -%} absent {%- endif -%}"
+    values:
+      port: "{{ papermc.port }}"
+      image: "{{ papermc.image }}"
+      version: "{{ papermc.version }}"
+      nfs:
+        server: "{{ nfs.server }}"
+        path: "{{ nfs.path }}"
+  delegate_to: localhost
+  run_once: true
