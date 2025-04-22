@@ -30,6 +30,11 @@ fishnet:
   replicas: 5
 archivebox:
   enabled: true
+monitoring:
+  enabled: true
+papermc:
+  enabled: true
+  version: 1.21.3
 servers:
   base: true
 ca:
