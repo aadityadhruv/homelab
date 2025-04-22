@@ -1,0 +1,2 @@
+nfs:
+  path: "/mnt/nfs/k3s/prometheus"

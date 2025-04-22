@@ -6,6 +6,51 @@
   delegate_to: localhost
   run_once: true
 
+- name: Add Prometheus PV
+  kubernetes.core.k8s:
+    state: "{%- if monitoring.enabled -%} present {%- else -%} absent {%- endif -%}"
+    definition:
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata:
+        name: "prometheus-pv"
+        labels:
+          app: "prometheus-pv"
+      spec:
+        storageClassName: nfs
+        capacity:
+          storage: 8Gi
+        accessModes:
+          - ReadWriteMany
+        nfs:
+          server: "{{ nfs.server }}"
+          path: "{{ nfs.path }}"
+          readOnly: false
+  delegate_to: localhost
+  run_once: true
+
+- name: Add Prometheus PVC
+  kubernetes.core.k8s:
+    state: "{%- if monitoring.enabled -%} present {%- else -%} absent {%- endif -%}"
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: prometheus-pvc
+        namespace: default
+      spec:
+        storageClassName: nfs
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 8Gi
+        selector:
+          matchLabels:
+            app: "prometheus-pv"
+  delegate_to: localhost
+  run_once: true
+
 - name: Deploy prometheus
   kubernetes.core.helm:
     name: prometheus
@@ -13,5 +58,27 @@
     namespace: default
     state: "{%- if monitoring.enabled -%} present {%- else -%} absent {%- endif -%}"
     values:
+      alertmanager:
+        enabled: false
+      prometheus-pushgateway:
+        enabled: false
+      server:
+        ingress:
+          annotations:
+            cert-manager.io/cluster-issuer: ca-issuer
+          enabled: true
+          hosts:
+            - prometheus.home
+          tls:
+            - secretName: prometheus-tls
+              hosts:
+                - prometheus.home
+          securityContext:
+            runAsUser: 1000
+            runAsNonRoot: true
+            runAsGroup: 1000
+            fsGroup: 1000
+          persistentVolume:
+            existingClaim: "prometheus-pvc"
   delegate_to: localhost
   run_once: true
