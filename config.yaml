@@ -10,7 +10,7 @@ gonic:
   version: 1c23771 #v0.16.4
   enabled: true
 cgit:
-  version: v2.5
+  version: v2.6
   enabled: true
 pihole:
   enabled: true
