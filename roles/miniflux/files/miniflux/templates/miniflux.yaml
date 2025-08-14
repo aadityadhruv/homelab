@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Chart.Name }}-deployment"
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      containers:
+      - name: miniflux
+        image: "{{ .Values.image }}:{{ .Values.version }}"
+        env: 
+        - name: DATABASE_URL
+          value: "postgres://miniflux:{{ .Values.db_password }}@localhost:5432/miniflux?sslmode=disable"
+        - name: RUN_MIGRATIONS
+          value: "1"
+      - name: postgres
+        image: postgres:17-alpine
+        env: 
+        - name: POSTGRES_DB
+          value: miniflux
+        - name: POSTGRES_USER
+          value: miniflux
+        - name: POSTGRES_PASSWORD
+          value: "{{ .Values.db_password }}"
+        volumeMounts:
+        - mountPath: "/var/lib/postgresql/data"
+          name: "{{ .Chart.Name }}-volume"
+          subPath: "db"
+      volumes:
+        - name: "{{ .Chart.Name }}-volume"
+          persistentVolumeClaim:
+            claimName: "{{ .Chart.Name }}-pvc"

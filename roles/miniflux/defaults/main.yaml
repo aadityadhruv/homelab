@@ -1,0 +1,9 @@
+miniflux:
+  enabled: false
+  replicas: 1
+  port: 80
+  image: miniflux/miniflux
+  version: 2.2.11
+
+nfs:
+  path: "/mnt/nfs/k3s/miniflux/"

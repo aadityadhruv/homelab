@@ -6,7 +6,7 @@
     namespace: default
     state: "{%- if actual.enabled -%} present {%- else -%} absent {%- endif -%}"
     values:
-      replicas: "{{ actual.replicas}}"
+      replicas: "{{ actual.replicas }}"
       port: "{{ actual.port }}"
       image: "{{ actual.image }}"
       version: "{{ actual.version }}"

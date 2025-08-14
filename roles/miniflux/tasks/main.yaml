@@ -1,0 +1,17 @@
+- name: Deploy Miniflux
+  kubernetes.core.helm:
+    name: miniflux
+    chart_ref: "{{ lookup('env', 'PWD') }}/roles/miniflux/files/miniflux"
+    namespace: default
+    state: "{%- if miniflux.enabled -%} present {%- else -%} absent {%- endif -%}"
+    values:
+      replicas: "{{ miniflux.replicas }}"
+      port: "{{ miniflux.port }}"
+      image: "{{ miniflux.image }}"
+      version: "{{ miniflux.version }}"
+      db_password: "{{ miniflux.db_password }}"
+      nfs:
+        server: "{{ nfs.server }}"
+        path: "{{ nfs.path }}"
+  delegate_to: localhost
+  run_once: true

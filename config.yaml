@@ -35,6 +35,8 @@ monitoring:
 papermc:
   enabled: true
   version: 1.21.3
+miniflux:
+  enabled: true
 servers:
   base: true
 ca:
