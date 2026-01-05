@@ -1,5 +1,7 @@
-FROM docker.io/openjdk:21-bookworm
-RUN git clone https://github.com/PaperMC/Paper-archive.git /Paper
+FROM docker.io/amazoncorretto:21-alpine
+#RUN dnf install java-21-openjdk -y
+RUN apk add git
+RUN git clone https://github.com/PaperMC/Paper.git /Paper
 RUN git config --global user.email "you@example.com"
 RUN git config --global user.name "Your Name"
 WORKDIR /Paper
@@ -7,8 +9,8 @@ ARG VERSION
 RUN echo "Building version: $VERSION"
 RUN git checkout ver/$VERSION
 RUN ./gradlew applyPatches
-RUN ./gradlew createReobfBundlerJar
+RUN ./gradlew createMojmapBundlerJar
 RUN mkdir /data
-RUN mv /Paper/build/libs/* /server.jar
+RUN mv /Paper/paper-server/build/libs/*bundler* /server.jar
 WORKDIR /data
-CMD java -Xmx4097M -Xms4096M -XX:+AlwaysPreTouch -XX:+DisableExplicitGC -XX:+ParallelRefProcEnabled -XX:+PerfDisableSharedMem -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1HeapRegionSize=8M -XX:G1HeapWastePercent=5 -XX:G1MaxNewSizePercent=40 -XX:G1MixedGCCountTarget=4 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1NewSizePercent=30 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:G1ReservePercent=20 -XX:InitiatingHeapOccupancyPercent=15 -XX:MaxGCPauseMillis=200 -XX:MaxTenuringThreshold=1 -XX:SurvivorRatio=32 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true -jar /server.jar --nogui
+CMD java -Xms4096M -Xmx4096M -XX:+AlwaysPreTouch -XX:+DisableExplicitGC -XX:+ParallelRefProcEnabled -XX:+PerfDisableSharedMem -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1HeapRegionSize=8M -XX:G1HeapWastePercent=5 -XX:G1MaxNewSizePercent=40 -XX:G1MixedGCCountTarget=4 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1NewSizePercent=30 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:G1ReservePercent=20 -XX:InitiatingHeapOccupancyPercent=15 -XX:MaxGCPauseMillis=200 -XX:MaxTenuringThreshold=1 -XX:SurvivorRatio=32 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true -jar /server.jar nogui

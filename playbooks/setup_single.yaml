@@ -2,6 +2,6 @@
   hosts: all
   gather_facts: false
   tasks:
-    - name: Setup miniflux
+    - name: Setup papermc
       include_role:
-        name: "roles/miniflux"
+        name: "roles/papermc"

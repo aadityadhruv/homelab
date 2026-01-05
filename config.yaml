@@ -4,7 +4,7 @@ actual:
   enabled: true
   version: 25.2.1
 jellyfin:
-  version: 10.10.0
+  version: 10.10.7
   enabled: true
 gonic:
   version: 1c23771 #v0.16.4
@@ -34,7 +34,7 @@ monitoring:
   enabled: true
 papermc:
   enabled: true
-  version: 1.21.3
+  version: 1.21.8
 miniflux:
   enabled: true
 servers:
