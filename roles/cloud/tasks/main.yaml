@@ -6,10 +6,12 @@
     namespace: default
     state: "{%- if cloud.enabled -%} present {%- else -%} absent {%- endif -%}"
     values:
-      image: filebrowser/filebrowser
+      image: sigoden/dufs
       replicas: "{{ cloud.replicas }}"
       version: "{{ cloud.version }}"
       port: "{{ cloud.port }}"
+      user: "{{ cloud.user }}"
+      password: "{{ cloud.password }}"
       nfs:
         path: "{{ cloud.path }}"
         server: "{{ nfs.server }}"

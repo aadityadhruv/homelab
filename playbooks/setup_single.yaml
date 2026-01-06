@@ -2,6 +2,6 @@
   hosts: all
   gather_facts: false
   tasks:
-    - name: Setup papermc
+    - name: Setup cloud
       include_role:
-        name: "roles/papermc"
+        name: "roles/cloud"

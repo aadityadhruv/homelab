@@ -15,15 +15,21 @@ spec:
         app: {{ .Chart.Name }}
     spec:
       containers:
-      - name: filebrowser
+      - name: dufs
         image: "{{ .Values.image }}:{{ .Values.version }}"
         ports:
           - name: http
             containerPort: 80
+        env:
+          - name: "DUFS_CONFIG"
+            value: "/etc/dufs.yaml"
         volumeMounts:
         - mountPath: "/Drive"
           name: "{{ .Chart.Name }}-volume"
           subPath: "Drive"
+        - mountPath: "/etc/dufs.yaml"
+          name: "config"
+          subPath: dufs
         - mountPath: "/database.db"
           name: "{{ .Chart.Name }}-volume"
           subPath: "db/database.db"
@@ -31,6 +37,9 @@ spec:
           name: "{{ .Chart.Name }}-volume"
           subPath: "config/filebrowser.json"
       volumes:
+      - name: "config"
+        configMap:
+          name: "{{ .Chart.Name }}-config"
       - name: "{{ .Chart.Name }}-volume"
         persistentVolumeClaim:
           claimName: {{ .Chart.Name }}-pvc 

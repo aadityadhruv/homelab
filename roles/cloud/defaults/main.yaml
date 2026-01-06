@@ -1,5 +1,5 @@
 cloud:
-  version: v2.26.0
+  version: v0.45.0
   replicas: 1
   enabled: false
   port: 80
