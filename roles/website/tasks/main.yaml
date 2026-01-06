@@ -1,0 +1,17 @@
+---
+- name: Deploy Website
+  kubernetes.core.helm:
+    name: website
+    chart_ref: "{{ lookup('env', 'PWD') }}/roles/website/files/website"
+    namespace: default
+    state: "{%- if website.enabled -%} present {%- else -%} absent {%- endif -%}"
+    values:
+      image: caddy
+      replicas: "{{ website.replicas }}"
+      version: "{{ website.version }}"
+      port: "{{ website.port }}"
+      nfs:
+        path: "{{ website.path }}"
+        server: "{{ nfs.server }}"
+  delegate_to: localhost
+  run_once: true

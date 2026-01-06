@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-config
+data:
+  Caddyfile: |
+    :80 {
+    root * /static/home
+    encode gzip
+    file_server {
+        hide .git
+    }
+    header {
+        ?Cache-Control "max-age=1800"
+    }
+    }
+    :81 {
+    root * /static/spacejunk
+    encode gzip
+    file_server {
+        hide .git
+    }
+    header {
+        ?Cache-Control "max-age=1800"
+    }
+    }
+

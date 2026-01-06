@@ -1,5 +1,7 @@
 nfs:
   server: 192.168.20.5
+website:
+  enabled: true
 actual:
   enabled: true
   version: 25.2.1

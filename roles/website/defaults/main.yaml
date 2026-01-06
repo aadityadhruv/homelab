@@ -1,0 +1,6 @@
+website:
+  version: 2.11-alpine
+  replicas: 3
+  enabled: false
+  port: 80
+  path: "/mnt/nfs/k3s/website/"

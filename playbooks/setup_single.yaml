@@ -2,6 +2,6 @@
   hosts: all
   gather_facts: false
   tasks:
-    - name: Setup cloud
+    - name: Setup website
       include_role:
-        name: "roles/cloud"
+        name: "roles/website"
