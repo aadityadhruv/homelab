@@ -1,6 +1,10 @@
 [Interface]
-Address = 10.0.0.1/24
-PostUp = firewall-cmd --add-masquerade
-PostDown = firewall-cmd --remove-masquerade
+Address = 172.16.10.1/16
 ListenPort = {{ network.wireguard.port }}
 PrivateKey = {{ privatekey }}
+PostUp=iptables -t nat -A PREROUTING -i eth0 -p tcp -m tcp --dport 80 -j DNAT --to-destination 172.16.20.2
+PostUp=iptables -t nat -A PREROUTING -i eth0 -p tcp -m tcp --dport 443 -j DNAT --to-destination 172.16.20.2
+PostUp=iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
+PostDown=iptables -t nat -D PREROUTING -i eth0 -p tcp -m tcp --dport 80 -j DNAT --to-destination 172.16.20.2
+PostDown=iptables -t nat -D PREROUTING -i eth0 -p tcp -m tcp --dport 443 -j DNAT --to-destination 172.16.20.2
+PostDown=iptables -t nat -D POSTROUTING -o wg0 -j MASQUERADE

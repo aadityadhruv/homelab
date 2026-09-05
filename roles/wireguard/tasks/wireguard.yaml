@@ -58,6 +58,9 @@
     delegate_to: "{{ groups['cloud'][0] }}"
     register: output
 
+  - name: gather facts
+    gather_facts:
+
   - name: Generate private key
     ansible.builtin.shell: "wg genkey"
     register: privatekey
@@ -75,8 +78,12 @@
       publickey: "{{ publickey.stdout_lines[0] }}"
 
   - name: Setup wireguard ip fact
+    debug:
+      var: hostvars[inventory_hostname]
+
+  - name: Setup wireguard ip fact
     set_fact:
-      wireguard_ip: "10.0.0.{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'].split('.')[3] }}"
+      wireguard_ip: "172.16.{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'].split('.')[2] }}.{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'].split('.')[3] }}"
 
   - name: Create wireguard config file
     ansible.builtin.template:
