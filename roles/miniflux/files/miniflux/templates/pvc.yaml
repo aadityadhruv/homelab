@@ -3,12 +3,12 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Chart.Name }}-pvc
 spec:
-  storageClassName: nfs
+  storageClassName: local-storage
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 10Gi
+      storage: 2Gi
   selector:
     matchLabels:
       app: "{{ .Chart.Name }}-pv"

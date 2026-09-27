@@ -10,8 +10,6 @@
       image: "{{ miniflux.image }}"
       version: "{{ miniflux.version }}"
       db_password: "{{ miniflux.db_password }}"
-      nfs:
-        server: "{{ nfs.server }}"
-        path: "{{ nfs.path }}"
+      path: "{{ miniflux.path }}"
   delegate_to: localhost
   run_once: true

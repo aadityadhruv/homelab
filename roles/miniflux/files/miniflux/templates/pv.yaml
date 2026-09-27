@@ -5,12 +5,18 @@ metadata:
   labels:
     app: "{{ .Chart.Name }}-pv"
 spec:
-  storageClassName: nfs
+  storageClassName: local-storage
+  local:
+    path: {{ .Values.path }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - regice
   capacity:
-    storage: 10Gi
+    storage: 2Gi
   accessModes:
     - ReadWriteMany
-  nfs:
-    server: {{ .Values.nfs.server }}
-    path: {{ .Values.nfs.path }}
-    readOnly: false

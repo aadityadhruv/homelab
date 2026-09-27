@@ -4,6 +4,4 @@ miniflux:
   port: 80
   image: miniflux/miniflux
   version: 2.2.11
-
-nfs:
-  path: "/mnt/nfs/k3s/miniflux/"
+  path: "/k3s/miniflux/"
