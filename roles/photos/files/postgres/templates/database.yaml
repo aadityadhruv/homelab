@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "immich-postgres-deployment"
+  name: "{{ .Release.Name }}-postgres-deployment"
   labels:
-    app: "immich-db"
+    app: "{{ .Release.Name }}-db"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "immich-db"
+      app: "{{ .Release.Name }}-db"
   template:
     metadata:
       labels:
-        app: "immich-db"
+        app: "{{ .Release.Name }}-db"
     spec:
       containers:
-      - name: immich-db
+      - name: {{ .Release.Name }}-db
         image: "{{ .Values.image }}:{{ .Values.version }}"
         env: 
         - name: POSTGRES_USER
@@ -30,8 +30,8 @@ spec:
           - containerPort: 5432
         volumeMounts:
         - mountPath: "/var/lib/postgresql/data"
-          name: "immich-database-volume"
+          name: "{{ .Release.Name }}-database-volume"
       volumes:
-        - name: "immich-database-volume"
+        - name: "{{ .Release.Name }}-database-volume"
           persistentVolumeClaim:
-            claimName: "immich-db-pvc"
+            claimName: "{{ .Release.Name }}-db-pvc"

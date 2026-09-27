@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: immich
+  name: {{ .Release.Name }}
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
@@ -9,7 +9,7 @@ spec:
   tls:
   - hosts:
     - photos.aadityadhruv.com
-    secretName: immich-tls
+    secretName: {{ .Release.Name }}-tls
   rules:
   - host: photos.home
     http:
@@ -18,7 +18,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: immich-server
+            name: immich-prod-server
             port:
               number: 2283
   - host: photos.aadityadhruv.com
@@ -28,6 +28,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: immich-server
+            name: immich-prod-server
             port:
               number: 2283
