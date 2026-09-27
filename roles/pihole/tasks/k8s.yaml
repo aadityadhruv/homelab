@@ -8,8 +8,6 @@
       replicas: "{{ pihole.replicas }}"
       image: "{{ pihole.image }}"
       version: "{{ pihole.version }}"
-      nfs:
-        server: "{{ nfs.server }}"
-        path: "{{ nfs.path }}"
+      path: "{{ pihole.path }}"
   delegate_to: localhost
   run_once: true

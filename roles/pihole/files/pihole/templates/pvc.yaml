@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Chart.Name }}-pvc
 spec:
-  storageClassName: nfs
+  storageClassName: local-storage
   accessModes:
     - ReadWriteMany
   resources:

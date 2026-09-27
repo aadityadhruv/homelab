@@ -17,7 +17,7 @@ cgit:
 pihole:
   enabled: true
   baremetal: false 
-  version: 2024.01.0
+  version: 2026.09.0
 metallb:
   enabled: true
   pool: 192.168.20.100-192.168.20.250
@@ -26,7 +26,8 @@ cloud:
 immich:
   enabled: true
   postgres:
-    version: pg14-v0.2.0
+    image: ghcr.io/immich-app/postgres
+    version: 14-vectorchord0.4.3-pgvectors0.2.0
 fishnet:
   enabled: true
   replicas: 5
