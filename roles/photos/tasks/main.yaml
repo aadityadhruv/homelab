@@ -15,9 +15,7 @@
       version: "{{ immich.postgres.version }}"
       user: "{{ immich.postgres.user }}"
       password: "{{ immich.postgres.password }}"
-      nfs:
-        server: "{{ nfs.server }}"
-        path: "{{ immich.postgres.nfs.path }}"
+      path: "{{ immich.postgres.path }}"
     namespace: default
   delegate_to: localhost
   run_once: true

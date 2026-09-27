@@ -3,7 +3,6 @@ immich:
   postgres:
     image: tensorchord/pgvecto-rs
     user: postgres
-    nfs:
-      path: /mnt/nfs/k3s/photos/db
+    path: /home/k3s/photos/db
 nfs:
   path: /mnt/nfs/k3s/photos/data

@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Release.Name }}-db-pvc
 spec:
-  storageClassName: nfs
+  storageClassName: local-storage
   accessModes:
     - ReadWriteMany
   resources:
